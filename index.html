@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Verhütung – Freie Entscheidung</title>
+	<style>
+		:root {
+			--bg: #f5f6fb;
+			--card: #ffffff;
+			--ink: #182033;
+			--muted: #687085;
+			--accent: #6258d9;
+			--soft: #ecebff;
+			--line: #e1e4ec;
+			--good: #e8f7ee;
+			--good-border: #cdebd8;
+			--warn: #fff4df;
+			--warn-border: #f1ddb2;
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		html {
+			scroll-behavior: smooth;
+		}
+
+		body {
+			margin: 0;
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			background: var(--bg);
+			color: var(--ink);
+			line-height: 1.6;
+		}
+
+		header {
+			padding: 70px 20px;
+			color: white;
+			background: linear-gradient(135deg, #171b2f, #5c56a5);
+		}
+
+		.hero,
+		main,
+		nav>div,
+		footer>div {
+			max-width: 1080px;
+			margin: auto;
+		}
+
+		.hero h1 {
+			font-size: clamp(2.5rem, 7vw, 4.8rem);
+			line-height: 1.1;
+			margin: 20px 0 15px;
+		}
+
+		.hero p {
+			max-width: 780px;
+			font-size: 1.15rem;
+			color: #eee;
+		}
+
+		.badge {
+			display: inline-block;
+			border-radius: 999px;
+			padding: 6px 14px;
+			font-size: 0.8rem;
+			font-weight: 800;
+			background: rgba(255, 255, 255, 0.2);
+			color: white;
+		}
+
+		.tag {
+			display: inline-block;
+			border-radius: 999px;
+			padding: 4px 10px;
+			font-size: 0.78rem;
+			font-weight: 800;
+			background: var(--soft);
+			color: #4941b4;
+			margin: 3px 3px 3px 0;
+		}
+
+		.btn {
+			display: inline-block;
+			margin-top: 20px;
+			background: white;
+			color: #22264a;
+			text-decoration: none;
+			padding: 12px 20px;
+			border-radius: 12px;
+			font-weight: 800;
+			transition: background 0.2s;
+		}
+
+		.btn:hover {
+			background: #e0e2f0;
+		}
+
+		nav {
+			position: sticky;
+			top: 0;
+			z-index: 20;
+			background: rgba(255, 255, 255, 0.92);
+			backdrop-filter: blur(12px);
+			border-bottom: 1px solid var(--line);
+			overflow-x: auto;
+		}
+
+		nav>div {
+			display: flex;
+			gap: 8px;
+			padding: 10px 12px;
+			min-width: max-content;
+		}
+
+		nav a {
+			text-decoration: none;
+			color: #3f4658;
+			font-weight: 700;
+			padding: 8px 12px;
+			border-radius: 9px;
+			font-size: 0.92rem;
+		}
+
+		nav a:hover {
+			background: var(--soft);
+			color: var(--accent);
+		}
+
+		main {
+			padding: 35px 18px 70px;
+		}
+
+		.section {
+			padding: 35px 0;
+		}
+
+		.section h2 {
+			font-size: clamp(1.7rem, 4vw, 2.5rem);
+			margin-bottom: 8px;
+			margin-top: 0;
+		}
+
+		.lead {
+			color: var(--muted);
+			max-width: 800px;
+			margin-bottom: 24px;
+			font-size: 1.05rem;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 18px;
+			padding: 20px;
+			box-shadow: 0 6px 20px rgba(24, 32, 51, 0.04);
+		}
+
+		.card h3 {
+			margin-top: 6px;
+			margin-bottom: 8px;
+		}
+
+		.clickable {
+			cursor: pointer;
+			transition: transform 0.2s, box-shadow 0.2s;
+		}
+
+		.clickable:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 12px 28px rgba(24, 32, 51, 0.1);
+		}
+
+		.filters {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 24px;
+		}
+
+		.filter {
+			border: 1px solid var(--line);
+			background: white;
+			border-radius: 999px;
+			padding: 9px 16px;
+			font-weight: 700;
+			font-size: 0.88rem;
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+
+		.filter:hover {
+			background: var(--soft);
+		}
+
+		.filter.active {
+			background: var(--accent);
+			color: white;
+			border-color: var(--accent);
+		}
+
+		.small {
+			font-size: 0.9rem;
+			color: var(--muted);
+		}
+
+		.tip {
+			background: var(--good);
+			border: 1px solid var(--good-border);
+			border-radius: 14px;
+			padding: 16px;
+			margin-top: 12px;
+		}
+
+		.warning {
+			background: var(--warn);
+			border: 1px solid var(--warn-border);
+			border-radius: 14px;
+			padding: 16px;
+			margin-top: 12px;
+		}
+
+		/* Modal Dialog */
+		.modal {
+			position: fixed;
+			inset: 0;
+			background: rgba(16, 20, 38, 0.6);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			padding: 18px;
+			z-index: 50;
+			backdrop-filter: blur(4px);
+		}
+
+		.modal.open {
+			display: flex;
+		}
+
+		.modalbox {
+			background: white;
+			max-width: 760px;
+			width: 100%;
+			max-height: 90vh;
+			overflow-y: auto;
+			border-radius: 22px;
+			padding: 28px;
+			position: relative;
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+		}
+
+		.close {
+			position: absolute;
+			right: 18px;
+			top: 18px;
+			border: 0;
+			background: #eef0f5;
+			border-radius: 50%;
+			width: 38px;
+			height: 38px;
+			font-size: 22px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.close:hover {
+			background: #e0e3ed;
+		}
+
+		/* Quiz Styling */
+		.quizq {
+			border: 1px solid var(--line);
+			border-radius: 15px;
+			padding: 18px;
+			margin: 14px 0;
+			background: white;
+		}
+
+		.quizq p {
+			font-weight: 800;
+			margin-top: 0;
+			margin-bottom: 12px;
+		}
+
+		.quizq label {
+			display: block;
+			padding: 10px 12px;
+			border-radius: 10px;
+			cursor: pointer;
+			border: 1px solid transparent;
+			margin-bottom: 6px;
+			transition: background 0.15s;
+		}
+
+		.quizq label:hover {
+			background: #f4f4fb;
+			border-color: var(--line);
+		}
+
+		.quizq input[type="radio"] {
+			margin-right: 10px;
+		}
+
+		.quizresult {
+			display: none;
+			margin-top: 22px;
+			padding: 22px;
+			border-radius: 16px;
+			background: var(--soft);
+			font-size: 1.1rem;
+			border: 1px solid var(--accent);
+		}
+
+		footer {
+			background: #171b2f;
+			color: #dfe2ef;
+			padding: 40px 20px;
+		}
+
+		footer a {
+			color: #fff;
+		}
+
+		@media(max-width:600px) {
+			header {
+				padding: 50px 18px;
+			}
+
+			.modalbox {
+				padding: 20px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<div class="hero">
+			<span class="badge">Schülerkampagne · Schwangerschaftsprävention</span>
+			<h1>Du musst nicht alles wissen.</h1>
+			<p>Aber es ist die Grundlage für eine freie Entscheidung.</p>
+			<a class="btn" href="#methoden">Verhütung vergleichen ↓</a>
+		</div>
+	</header>
+
+	<nav>
+		<div>
+			<a href="#methoden">1 · Methoden</a>
+			<a href="#mythen">2 · Mythen & Fakten</a>
+			<a href="#alltag">3 · Alltag & Pannen</a>
+			<a href="#quellen">4 · Informationsquellen</a>
+			<a href="#wichtig">5 · Warum wichtig?</a>
+			<a href="#bezugsquellen">6 · Unsere Quellen</a>
+			<a href="#quiz">7 · Quiz (12 Fragen)</a>
+		</div>
+	</nav>
+
+	<main>
+
+		<!-- SECTION 1: METHODEN -->
+		<section class="section" id="methoden">
+			<h2>1. Verhütungsmethoden im Vergleich</h2>
+			<p class="lead">Wähle eine Kategorie, um die Methoden zu filtern. Klicke auf eine Karte, um genauere Details zu Wirkungsweise, Vorteilen und Nebenwirkungen zu erhalten.</p>
+
+			<div class="filters" id="methodFilters">
+				<button class="filter active" data-filter="all">Alle Methoden</button>
+				<button class="filter" data-filter="hormonal">Hormonell</button>
+				<button class="filter" data-filter="hormonfrei">Hormonfrei</button>
+				<button class="filter" data-filter="langfristig">Langfristig</button>
+				<button class="filter" data-filter="kurzfristig">Bei Bedarf / Kurzfristig</button>
+				<button class="filter" data-filter="sti">Schutz vor STI</button>
+			</div>
+
+			<div class="grid" id="methodGrid"></div>
+
+			<div class="card" style="margin-top: 20px; background: #fafbff;">
+				<h3>Dauerhafte Verhütung (Sterilisation & Vasektomie)</h3>
+				<p>Eine dauerhafte Verhütung erfolgt durch eine <b>Vasektomie</b> beim Mann oder eine <b>Sterilisation</b> bei der Frau. Sie ist als endgültige Entscheidung gedacht und sollte medizinisch gründlich beraten werden.</p>
+				<button class="filter" onclick="openModal('dauerhaft')" style="margin-top: 5px;">Mehr erfahren</button>
+			</div>
+		</section>
+
+		<!-- SECTION 2: MYTHEN & FAKTEN -->
+		<section class="section" id="mythen">
+			<h2>2. Mythen & Fakten</h2>
+			<p class="lead">Einige Mythen halten sich hartnäckig. Klicke auf eine Karte, um den Faktencheck zu lesen.</p>
+			<div class="grid" id="mythGrid"></div>
+		</section>
+
+		<!-- SECTION 3: ALLTAG & PANNEN -->
+		<section class="section" id="alltag">
+			<h2>3. Verhütung im Alltag & Pannen</h2>
+			<p class="lead">Verhütungspannen oder Unklarheiten passieren. Klicke auf dein Anliegen/Problem, um **sofort konkrete und wissenschaftlich fundierte Tipps** zu sehen, die auch von <i>familienplanung.de</i> und <i>pro familia</i> empfohlen werden.</p>
+			<div class="grid" id="everydayGrid"></div>
+		</section>
+
+		<!-- SECTION 4: QUELLEN & ORIENTIERUNG -->
+		<section class="section" id="quellen">
+			<h2>4. Seriöse Informationsquellen</h2>
+			<p class="lead">Nicht jede Aussage auf Social Media ist korrekt. Wir orientieren uns an offiziellen, fachlich geprüften Institutionen.</p>
+			<div class="grid">
+				<div class="card">
+					<h3>familienplanung.de</h3>
+					<p>Unabhängiges und wissenschaftlich fundiertes Portal des Bundesinstituts für Öffentliche Gesundheit (BIÖG).</p>
+					<a href="https://www.familienplanung.de/verhuetung/verhuetungsmethoden/" target="_blank">Webseite besuchen ↗</a>
+				</div>
+				<div class="card">
+					<h3>pro familia</h3>
+					<p>Anerkannter Fachverband mit bundesweiten Beratungsstellen zu Verhütung, Sexualität und Partnerschaft.</p>
+					<a href="https://www.profamilia.de/themen/verhuetung/" target="_blank">Webseite besuchen ↗</a>
+				</div>
+				<div class="card">
+					<h3>Bundesinstitut für Öffentliche Gesundheit</h3>
+					<p>Bereitstellung von repräsentativen Studien zur Sexualaufklärung und Jugendsexualität.</p>
+					<a href="https://www.bioeg.de/" target="_blank">Webseite besuchen ↗</a>
+				</div>
+				<div class="card">
+					<h3>Ärztliche Beratung & Apotheken</h3>
+					<p>Für individuelle medizinische Fragen, Rezeptvergabe und Notfallverhütung vor Ort.</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- SECTION 5: WARUM WICHTIG -->
+		<section class="section" id="wichtig">
+			<h2>5. Warum dieses Thema wichtig ist</h2>
+			<div class="card">
+				<p>Verhütung ist eine persönliche Entscheidung, für die es keine Pauschallösung gibt. Manche Menschen möchten bewusst auf Hormone verzichten, andere suchen eine möglichst sichere Langzeitlösung ohne tägliches Drandenken. Zudem schützt nicht jede Verhütungsmethode vor sexuell übertragbaren Infektionen (STI).</p>
+				<p>In sozialen Medien kursieren viele Halbwahrheiten. Unsere Kampagne hilft dir dabei, Vor- und Nachteile abzuwägen und gut informiert eine eigene Entscheidung zu treffen.</p>
+				<p><b>Leitsatz:</b> Du musst nicht jedes Detail auswendig lernen – aber du solltest wissen, wie Methoden wirken, was im Notfall zu tun ist und wo du verlässliche Hilfe findest.</p>
+			</div>
+		</section>
+<!-- SECTION 6: BEZUGSQUELLEN -->
+<section class="section" id="bezugsquellen">
+    <h2>6. Unsere wissenschaftlichen Quellen</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>1 · familienplanung.de / BIÖG</h3>
+            <p>Details zu Methoden, Wirkstoffen, Sicherheit (Pearl-Index) und Pannenmanagement.</p>
+            <p><a href="https://www.familienplanung.de/" target="_blank" rel="noopener" style="color: #3182ce; font-weight: bold; text-decoration: underline;">➔ Zur Quelle öffnen</a></p>
+        </div>
+        <div class="card">
+            <h3>2 · pro familia e. V.</h3>
+            <p>Beratungsstandards und praxisnahe Informationen zu Verhütungsmitteln.</p>
+            <p><a href="https://www.profamilia.de/" target="_blank" rel="noopener" style="color: #3182ce; font-weight: bold; text-decoration: underline;">➔ Zur Quelle öffnen</a></p>
+        </div>
+        <div class="card">
+            <h3>3 · Bundesgesundheitsblatt (2023)</h3>
+            <p>Studie zur Qualität und Verlässlichkeit von Verhütungsinformationen auf TikTok, Instagram & YouTube.</p>
+            <p><a href="https://doi.org/10.1007/s00103-023-03698-0" target="_blank" rel="noopener" style="color: #3182ce; font-weight: bold; text-decoration: underline;">➔ Zur Studie (Springer)</a></p>
+        </div>
+        <div class="card">
+    <h3>4 · BZgA / RKI-Jugendsexualitätsstudie</h3>
+    <p>Empirische Daten zum Verhütungsverhalten und Informationsverhalten von Jugendlichen in Deutschland.</p>
+    <p><a href="https://doi.org/10.25646/9874" target="_blank" rel="noopener" style="color: #3182ce; font-weight: bold; text-decoration: underline;">➔ Zur RKI-Studie (Journal of Health Monitoring)</a></p>
+</div>
+
+        </div>
+    </div>
+</section>
+
+
+		<!-- SECTION 7: QUIZ -->
+		<section class="section" id="quiz">
+			<h2>7. Quiz – Wie gut kennst du dich aus?</h2>
+			<p class="lead">Teste dein Wissen in 12 Fragen. Wähle bei jeder Frage die richtige Antwort aus und klicke am Ende auf „Quiz auswerten“.</p>
+
+			<form id="quizForm"></form>
+
+			<button class="filter active" onclick="checkQuiz()" type="button" style="padding: 12px 24px; font-size: 1rem; margin-top: 10px;">Quiz auswerten</button>
+			<div class="quizresult" id="quizResult"></div>
+		</section>
+
+	</main>
+
+	<footer>
+		<div>
+			<b>Schülerkampagne: Verhütung & freie Entscheidung</b>
+			<p class="small">Diese Webseite wurde im Rahmen eines Schulprojekts erstellt. Sie dient der Aufklärung und ersetzt keine medizinische oder fachärztliche Beratung.</p>
+		</div>
+	</footer>
+
+	<!-- MODAL -->
+	<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+		<div class="modalbox">
+			<button class="close" onclick="closeModal()">×</button>
+			<div id="modalContent"></div>
+		</div>
+	</div>
+
+	<script>
+		// ==========================================
+		// DATA: 11 VERHÜTUNGSMETHODEN
+		// ==========================================
+		const methods = [{
+				id: "pille",
+				name: "Kombi-Pille",
+				tags: ["hormonal", "kurzfristig"],
+				label: "Hormonell · Tägliche Einnahme",
+				effect: "Enthält Östrogen und Gestagen. Sie unterdrückt den täglichen Eisprung, verdickt den Zervixschleim am Gebärmutterhals und verändert die Gebärmutterschleimhaut.",
+				positive: "Sehr hohe Sicherheit bei fehlerfreier Anwendung. Blutungen werden oft schwächer, regelmäßiger und schmerzfreier.",
+				side: "Mögliche Nebenwirkungen sind Kopfschmerzen, Brustspannen, Übelkeit, Stimmungsschwankungen oder Libidoverlust. Es besteht ein leicht erhöhtes Thromboserisiko.",
+				note: "Muss täglich etwa zur gleichen Zeit eingenommen werden. Schützt NICHT vor sexuell übertragbaren Infektionen (STI).",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/pille/"
+			},
+			{
+				id: "minipille",
+				name: "Minipille (Gestagenpille)",
+				tags: ["hormonal", "kurzfristig"],
+				label: "Hormonell · Östrogenfrei",
+				effect: "Enthält ausschließlich Gestagen. Verdickt den Zervixschleim für Spermien; neuere Präparate (Desogestrel/Drospirenon) verhindern zusätzlich zuverlässig den Eisprung.",
+				positive: "Östrogenfrei – daher auch für Personen geeignet, die kein Östrogen vertragen oder stillen.",
+				side: "Unregelmäßige Zwischen- oder Schmierblutungen möglich, eventuell Akne, Brustspannen oder Stimmungsschwankungen.",
+				note: "Sehr Disziplin erfordernd: Je nach Wirkstoff muss sie spannenzeitgenau (teils innerhalb eines 3-Stunden-Fensters) genommen werden. Kein STI-Schutz.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/minipille/"
+			},
+			{
+				id: "hormonspirale",
+				name: "Hormonspirale",
+				tags: ["hormonal", "langfristig"],
+				label: "Hormonell · Langzeitverhütung",
+				effect: "Wird vom Arzt in die Gebärmutter eingesetzt und gibt kontinuierlich geringe Mengen Gestagen lokal ab. Verdickt den Schleim und hemmt den Aufbau der Schleimhaut.",
+				positive: "Wirkt je nach Modell 3 bis 8 Jahre lang. Kein tägliches Drandenken nötig. Die Monatsblutung wird meist deutlich schwächer oder hört ganz auf.",
+				side: "Beim Einsetzen entstehen oft kurzfristige Krämpfe. In den ersten Monaten sind Schmierblutungen möglich.",
+				note: "Muss medizinisch eingesetzt und kontrolliert werden. Schützt nicht vor STI.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/die-hormonspirale/"
+			},
+			{
+				id: "staebchen",
+				name: "Verhütungsstäbchen (Implantat)",
+				tags: ["hormonal", "langfristig"],
+				label: "Hormonell · Implantat",
+				effect: "Ein kleiner, biegsamer Kunststoffstift wird unter die Haut des Oberarms eingesetzt und gibt kontinuierlich Gestagen ab. Verhindert den Eisprung.",
+				positive: "Wirkt 3 Jahre lang extrem sicher, ohne dass man im Alltag daran denken muss.",
+				side: "Häufig unregelmäßige oder veränderte Blutungsmuster. Lokale Blutergüsse nach dem Einsetzen.",
+				note: "Wird mit örtlicher Betäubung von Ärzt*innen eingesetzt und entfernt. Kein STI-Schutz.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/das-verhuetungsstaebchen/"
+			},
+			{
+				id: "ring",
+				name: "Verhütungsring (Vaginalring)",
+				tags: ["hormonal", "kurzfristig"],
+				label: "Hormonell · Monatsrhythmus",
+				effect: "Biegsamer Ring, der selbst in die Scheide eingelegt wird. Gibt kontinuierlich Östrogen und Gestagen ab und verhindert den Eisprung.",
+				positive: "Muss nur einmal alle 3 Wochen eingelegt bzw. gewechselt werden (1 Woche Pause). Magen-Darm-Probleme beeinträchtigen die Wirkung nicht.",
+				side: "Ähnliche hormonelle Nebenwirkungen wie bei der Kombi-Pille (Kopfschmerzen, erhöhtes Thromboserisiko, Scheidenreizungen).",
+				note: "Schützt nicht vor STI.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/der-verhuetungsring/"
+			},
+			{
+				id: "kupferspirale",
+				name: "Kupferspirale",
+				tags: ["hormonfrei", "langfristig"],
+				label: "Hormonfrei · Langzeitverhütung",
+				effect: "Gibt dauerhaft kleine Mengen Kupfer-Ionen ab. Kupfer hemmt die Beweglichkeit der Spermien und verhindert die Befruchtung sowie Einnistung.",
+				positive: "Völlig hormonfrei – der natürliche Menstruationszyklus bleibt ungestört. Wirkt je nach Modell 3 bis 10 Jahre.",
+				side: "Die Monatsblutung kann stärker, länger oder schmerzhafter werden, vor allem in den ersten Monaten.",
+				note: "Ärztliches Einsetzen erforderlich. Kein STI-Schutz.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/kupferspirale/"
+			},
+			{
+				id: "kupferkette",
+				name: "Kupferkette (GyneFix)",
+				tags: ["hormonfrei", "langfristig"],
+				label: "Hormonfrei · Flexibel",
+				effect: "Kleine Kupferperlen auf einem Faden, der in der Gebärmutterwand verankert wird. Gibt Kupferionen zur Spermienhemmung ab.",
+				positive: "Hormonfrei, sehr flexibel und passt sich gut an. Hält bis zu 5 Jahre.",
+				side: "Erhöhte Blutungsneigung möglich. Verlangt spezielle Schulung der Ärztin / des Arztes beim Einsetzen.",
+				note: "Kein STI-Schutz.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/kupferkette/"
+			},
+			{
+				id: "kondom",
+				name: "Kondom (für den Mann)",
+				tags: ["hormonfrei", "kurzfristig", "sti"],
+				label: "Hormonfrei · Barriere & STI-Schutz",
+				effect: "Dünne Latex- oder Polyurethanhülle über dem steifen Penis. Fängt den Samen auf und verhindert mechanisch das Eindringen von Spermien.",
+				positive: "Hormonfrei, rezeptfrei, Anwendung nur bei Bedarf. **Einzige Methode (neben Frauenkondom), die effektiv vor HIV und vielen STI schützt.**",
+				side: "Keine körperlichen Nebenwirkungen (außer bei Latexallergie – dafür gibt es latexfreie Kondome).",
+				note: "Die Passform (Kondomgröße) und die richtige Anwendung sind entscheidend für die Sicherheit!",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/kondom/"
+			},
+			{
+				id: "frauenkondom",
+				name: "Frauenkondom (Femidom)",
+				tags: ["hormonfrei", "kurzfristig", "sti"],
+				label: "Hormonfrei · Barriere & STI-Schutz",
+				effect: "Hauchdünne Hülle aus Polyurethan oder Nitril, die vor dem Sex in die Scheide eingelegt wird.",
+				positive: "Hormonfrei, kann schon vor dem Vorspiel eingelegt werden und schützt vor Schwangerschaft und STI.",
+				side: "Anwendung erfordert etwas Übung; kann bei Bewegung rascheln oder verrutschen.",
+				note: "Niemals gleichzeitig mit einem Männerkondom verwenden (Reibung!).",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/frauenkondom/"
+			},
+			{
+				id: "diaphragma",
+				name: "Diaphragma",
+				tags: ["hormonfrei", "kurzfristig"],
+				label: "Hormonfrei · Barriere bei Bedarf",
+				effect: "Silikonkappe, die vor dem Sex zusammen mit einem milchsäurehaltigen Verhütungsgel vor den Muttermund eingesetzt wird.",
+				positive: "Hormonfrei, wiederverwendbar, wird nur bei Bedarf angewendet.",
+				side: "Erfordert Übung beim Einsetzen. Muss nach dem Sex mindestens 6 Stunden im Körper bleiben.",
+				note: "Schützt NICHT vor STI. Eine genaue Anpassung in einer Praxis oder Beratungsstelle ist ratsam.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/diaphragma/"
+			},
+			{
+				id: "sympto",
+				name: "Symptothermale Methode (NFP)",
+				tags: ["hormonfrei", "kurzfristig"],
+				label: "Hormonfrei · Natürliche Verhütung",
+				effect: "Tägliches Messen der Aufwachtemperatur (Basaltemperatur) und Auswerten des Zervixschleims nach festen NFP-Regeln zur Bestimmung der fruchtbaren Tage.",
+				positive: "Absolut hormonfrei, fördert ein tiefes Verständnis für den eigenen Körper.",
+				side: "Erfordert hohe Selbstdisziplin, tägliche Routine und saubere Dokumentation. An fruchtbaren Tagen muss Abstinenz gehalten oder zusätzlich verhütet werden.",
+				note: "Kein STI-Schutz. Braucht Einarbeitung und regelmäßige Zyklen.",
+				source: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/die-symptothermale-methode/"
+			}
+		];
+
+		// ==========================================
+		// DATA: MYTHEN & FAKTEN
+		// ==========================================
+		const myths = [{
+				title: "„Die Pille schützt auch vor Geschlechtskrankheiten.“",
+				badge: "FALSCH",
+				desc: "Die Pille schützt ausschließlich vor ungewollten Schwangerschaften. Schutz vor STI (wie HIV, Chlamydien, Hepatitis) bieten nur Barriermethoden wie das Kondom."
+			},
+			{
+				title: "„Wenn das Kondom falsch herum aufgesetzt wurde, kann man es einfach umdrehen.“",
+				badge: "FALSCH",
+				desc: "Am Kondom können sich bereits Lusttropfen befinden, die Spermien oder Krankheitserreger enthalten. Wurde es falsch herum angesetzt: Entsorgen und ein neues Kondom nehmen!"
+			},
+			{
+				title: "„Hormonfreie Verhütung ist immer unsicherer als hormonelle.“",
+				badge: "FALSCH",
+				desc: "Methoden wie die Kupferspirale oder Kupferkette sind extrem sicher (Pearl-Index 0,3 - 1,0) und stehen hormonellen Methoden in der Sicherheit in nichts nach."
+			},
+			{
+				title: "„Die Pille danach ist eine normale Abtreibungspille.“",
+				badge: "FALSCH",
+				desc: "Die Pille danach ist KEINE Abtreibungspille. Sie verzögert lediglich den Eisprung, damit keine Befruchtung stattfindet. Ist das Ei bereits befruchtet, wirkt sie nicht mehr."
+			},
+			{
+				title: "„Zwei Kondome gleichzeitig schützen doppelt gut.“",
+				badge: "FALSCH",
+				desc: "Im Gegenteil: Durch die Reibung von Latex auf Latex können beide Kondome sehr leicht reißen. Immer nur EIN Kondom verwenden!"
+			},
+			{
+				title: "„Die Abbruchblutung in der Pillenpause ist eine echte Menstruation.“",
+				badge: "FALSCH",
+				desc: "Bei der Kombi-Pille gibt es keinen echten Zyklus. Die Blutung in der Pause ist eine künstliche Hormonentzugsblutung, ausgelöst durch den Hormonabfall."
+			}
+		];
+
+		// ==========================================
+		// DATA: ALLTAGSSPANNEN & PRO-FAMILIA TIPPS
+		// ==========================================
+		const everyday = [{
+				problem: "Kondom gerissen oder abgerutscht",
+				summary: "Was ist direkt nach dem Abrutschen/Riss zu tun?",
+				solution: "1. Ruhe bewahren und das Kondom vorsichtig entfernen.<br>2. **Schwangerschaftsschutz:** Prüfen, wann der letzte Eisprung war. So schnell wie möglich (am besten innerhalb von 24h, max. 72-120h) die **Pille danach** aus der Apotheke holen (rezeptfrei).<br>3. **STI-Schutz:** Bei unbekanntem Infektionsstatus des Partners eine Beratung beim Arzt, Gesundheitsamt oder *pro familia* bezüglich STI-Tests oder einer HIV-PEP suchen.",
+				link: "https://www.familienplanung.de/verhuetung/verhuetungspannen/kondompanne/"
+			},
+			{
+				problem: "Pille einmal vergessen – Was nun?",
+				summary: "Schritt-für-Schritt-Anleitung bei vergessener Pille.",
+				solution: "1. **Unter 12 Stunden (bzw. 24h je nach Präparat):** Hol die Einnahme sofort nach. Der Schutz bleibt meist bestehen.<br>2. **Über 12 Stunden verzögert:** Lies die Packungsbeilage deiner spezifischen Pille. <br>• *Woche 1:* Pille nachholen, die nächsten 7 Tage zusätzlich mit Kondom verhüten. Hattest du in den 7 Tagen davor Sex? Dann Notfallverhütung (Pille danach) erwägen.<br>• *Woche 2:* Nachholen, Schutz bleibt i. d. R. erhalten.<br>• *Woche 3:* Nachholen und direkt ohne Pause in den nächsten Streifen übergehen.",
+				link: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/pille/pille-vergessen/"
+			},
+			{
+				problem: "Erbrechen oder Durchfall nach der Einnahme",
+				summary: "Hormonaufnahme bei Magen-Darm-Beschwerden.",
+				solution: "Tritt innerhalb von 3 bis 4 Stunden nach der Pilleneinnahme Erbrechen oder schwerer Durchfall auf, wurden die Wirkstoffe vom Körper meist noch nicht aufgenommen. Nimm direkt eine Pille aus einem Ersatzstreifen nach. Hält die Krankheit länger an, verhalte dich wie bei einer 'vergessenen Pille' und verhüte zusätzlich mit Kondom.",
+				link: "https://www.familienplanung.de/verhuetung/verhuetungsmethoden/pille/"
+			},
+			{
+				problem: "Einnahme von Antibiotika oder anderen Medikamenten",
+				summary: "Wechselwirkungen zwischen Pille und Arzneimitteln.",
+				solution: "Manche Medikamente (z. B. bestimmte Antibiotika, Johanniskraut oder Antiepileptika) beschleunigen den Abbau von Hormonen in der Leber. Dadurch verliert die Pille ihre Schutzwirkung. **Tipp:** Frage in der Apotheke nach Wechselwirkungen und verhüte für die Dauer der Einnahme plus 7 Tage danach zusätzlich mit Kondomen.",
+				link: "https://www.profamilia.de/themen/verhuetung/pille"
+			},
+			{
+				problem: "Frage zur 'Pille danach' (Notfallverhütung)",
+				summary: "Wann, wie und wo bekomme ich die Pille danach?",
+				solution: "• **Woher?** Rezeptfrei in jeder Apotheke nach einem vertraulichen Beratungsgespräch.<br>• **Wie wirkt sie?** Sie verschiebt den Eisprung um einige Tage, sodass die Spermien absterben.<br>• **Wann?** Je früher, desto besser! Es gibt zwei Wirkstoffe: *Levonorgestrel* (bis zu 3 Tage nach dem Sex) und *Ulipristalacetat* (bis zu 5 Tage danach).<br>• **Kosten:** Für Jugendliche unter 22 Jahren übernehmen die gesetzlichen Krankenkassen die Kosten (mit Rezept von Arzt/Notdienst).",
+				link: "https://www.familienplanung.de/verhuetung/verhuetungspannen/pille-danach-und-spirale-danach/"
+			},
+			{
+				problem: "Welche Methode passt überhaupt zu mir?",
+				summary: "Orientierungshilfe für das Beratungsgespräch.",
+				solution: "Stelle dir vor einem Arztbesuch oder Gespräch bei *pro familia* folgende Fragen:<br>1. Möchte ich Hormone in meinem Körper oder lieber hormonfrei verhüten?<br>2. Bin ich vergesslich oder möchte ich jahrelang meine Ruhe haben?<br>3. Benötige ich Schutz vor sexuell übertragbaren Infektionen (STI)?<br>4. Wie wichtig ist mir die Sicherheit (Pearl-Index)?",
+				link: "https://www.familienplanung.de/verhuetung/welche-verhuetung-passt-zu-mir/"
+			}
+		];
+
+		// ==========================================
+		// DATA: QUIZ (12 FRAGEN)
+		// ==========================================
+		const quiz = [{
+				q: "1. Welche Methode schützt als einzige effektiv vor ungewollter Schwangerschaft UND vor sexuell übertragbaren Infektionen (STI)?",
+				a: "Kondom / Frauenkondom",
+				options: ["Kombi-Pille", "Kondom / Frauenkondom", "Hormonspirale", "Kupferspirale"]
+			},
+			{
+				q: "2. Was passiert bei der Einnahme der klassischen Kombi-Pille im Körper?",
+				a: "Der Eisprung wird unterdrückt",
+				options: ["Die Eileiter werden verschlossen", "Der Eisprung wird unterdrückt", "Spermien werden abgetötet", "Es verändert sich nur die Körpertemperatur"]
+			},
+			{
+				q: "3. Welche der folgenden Verhütungsmethoden ist 100 % hormonfrei?",
+				a: "Kupferspirale",
+				options: ["Minipille", "Verhütungsring", "Kupferspirale", "Verhütungsstäbchen"]
+			},
+			{
+				q: "4. Wie funktioniert die 'Pille danach'?",
+				a: "Sie verzögert den Eisprung",
+				options: ["Sie löst eine Abtreibung aus", "Sie tötet alle Spermien im Körper ab", "Sie verzögert den Eisprung", "Sie wirkt für die nächsten 3 Monate als Schutz"]
+			},
+			{
+				q: "5. Wo kann man die 'Pille danach' im Notfall erhalten?",
+				a: "Rezeptfrei in der Apotheke",
+				options: ["Nur mit Rezept beim Frauenarzt", "Rezeptfrei in der Apotheke", "Im Supermarkt", "Nur im Krankenhaus"]
+			},
+			{
+				q: "6. Wie lange wirkt ein Verhütungsstäbchen im Oberarm typischerweise?",
+				a: "3 Jahre",
+				options: ["6 Monate", "1 Jahr", "3 Jahre", "10 Jahre"]
+			},
+			{
+				q: "7. Was ist zu tun, wenn ein Kondom beim Sex gerissen ist?",
+				a: "Reste entfernen und möglichst rasch Notfallverhütung (z. B. Pille danach) prüfen",
+				options: ["Nichts tun und abwarten", "Sofort mit heißem Wasser ausspülen", "Reste entfernen und möglichst rasch Notfallverhütung (z. B. Pille danach) prüfen", "Zwei normale Pillen auf einmal nehmen"]
+			},
+			{
+				q: "8. Was beeinflusst die Zuverlässigkeit der symptothermalen Methode (NFP) am stärksten?",
+				a: "Unregelmäßiger Schlaf, Alkohol oder fehlerhafte Auswertung",
+				options: ["Die Einnahme von Östrogenen", "Unregelmäßiger Schlaf, Alkohol oder fehlerhafte Auswertung", "Das Tragen von engen Hosen", "Das Wetter"]
+			},
+			{
+				q: "9. Was gibt eine Kupferspirale in der Gebärmutter ab?",
+				a: "Kupfer-Ionen",
+				options: ["Gestagene", "Östrogene", "Kupfer-Ionen", "Antibiotika"]
+			},
+			{
+				q: "10. Wofür steht die Abkürzung 'STI'?",
+				a: "Sexuell übertragbare Infektionen (Sexually Transmitted Infections)",
+				options: ["Sichere Therapie im Internet", "Sexuell übertragbare Infektionen (Sexually Transmitted Infections)", "Standard-Test-Index", "Systematische Intim-Pflege"]
+			},
+			{
+				q: "11. Welcher Faktor beeinträchtigt die Wirkung der Antibabypille im Magen-Darm-Trakt?",
+				a: "Erbrechen oder starker Durchfall kurz nach der Einnahme",
+				options: ["Trinken von stillem Wasser", "Erbrechen oder starker Durchfall kurz nach der Einnahme", "Essen von Schokolade", "Sport am Abend"]
+			},
+			{
+				q: "12. Welcher Grundsatz gilt für eine freie Entscheidung bei der Verhütungswahl?",
+				a: "Es gibt keine 'perfekte' Methode für alle – individuell abwägen zählt",
+				options: ["Jeder sollte immer die Pille nehmen", "Es gibt keine 'perfekte' Methode für alle – individuell abwägen zählt", "Hormonfreie Methoden sind immer besser", "Kondome sind nur für Jugendliche gedacht"]
+			}
+		];
+
+		// ==========================================
+		// LOGIC & RENDERING
+		// ==========================================
+
+		// Render Methods
+		const methodGrid = document.getElementById("methodGrid");
+
+		function renderMethods(filter = "all") {
+			methodGrid.innerHTML = "";
+			methods.forEach((m, i) => {
+				if (filter !== "all" && !m.tags.includes(filter)) return;
+				const card = document.createElement("div");
+				card.className = "card clickable";
+				card.innerHTML = `
+      <span class="tag">${m.label}</span>
+      <h3>${m.name}</h3>
+      <p class="small">${m.effect.substring(0, 90)}...</p>
+      <p style="font-size:0.82rem; color:var(--accent); font-weight:700; margin-top:10px;">➔ Klick für Details & Vor/Nachteile</p>
+    `;
+				card.onclick = () => openModal("method", i);
+				methodGrid.appendChild(card);
+			});
+		}
+
+		// Filter Click Handlers
+		document.querySelectorAll("#methodFilters .filter").forEach(btn => {
+			btn.onclick = () => {
+				document.querySelectorAll("#methodFilters .filter").forEach(b => b.classList.remove("active"));
+				btn.classList.add("active");
+				renderMethods(btn.dataset.filter);
+			};
+		});
+		renderMethods();
+
+		// Render Myths
+		const mythGrid = document.getElementById("mythGrid");
+		myths.forEach((m, i) => {
+			const c = document.createElement("div");
+			c.className = "card clickable";
+			c.innerHTML = `
+    <span class="tag" style="background:#ffebee; color:#c62828;">${m.badge}</span>
+    <h3>${m.title}</h3>
+    <p class="small">Klicke hier für die wissenschaftliche Richtigstellung.</p>
+  `;
+			c.onclick = () => openModal("myth", i);
+			mythGrid.appendChild(c);
+		});
+
+		// Render Everyday Problems
+		const everydayGrid = document.getElementById("everydayGrid");
+		everyday.forEach((e, i) => {
+			const c = document.createElement("div");
+			c.className = "card clickable";
+			c.innerHTML = `
+    <span class="tag" style="background:#e8f5e9; color:#2e7d32;">Problem & Lösung</span>
+    <h3>${e.problem}</h3>
+    <p class="small">${e.summary}</p>
+    <p style="font-size:0.82rem; color:var(--accent); font-weight:700; margin-top:10px;">➔ Empfohlene Lösung anzeigen</p>
+  `;
+			c.onclick = () => openModal("everyday", i);
+			everydayGrid.appendChild(c);
+		});
+
+		// Modal Controller
+		function openModal(type, index) {
+			let content = "";
+			if (type === "method") {
+				const m = methods[index];
+				content = `
+      <span class="tag">${m.label}</span>
+      <h2>${m.name}</h2>
+      <h3>Wirkungsweise</h3>
+      <p>${m.effect}</p>
+      <h3>Vorteile / Positive Aspekte</h3>
+      <p style="color:#2e7d32; font-weight:600;">${m.positive}</p>
+      <h3>Mögliche Nebenwirkungen & Nachteile</h3>
+      <p>${m.side}</p>
+      <div class="warning"><b>Wichtiger Hinweis:</b> ${m.note}</div>
+      <p style="margin-top:15px;"><a href="${m.source}" target="_blank" style="color:var(--accent); font-weight:bold;">Ausführliche Informationen bei familienplanung.de ↗</a></p>
+    `;
+			} else if (type === "myth") {
+				const m = myths[index];
+				content = `
+      <span class="tag" style="background:#ffebee; color:#c62828;">${m.badge}</span>
+      <h2>${m.title}</h2>
+      <h3>Faktencheck & Erklärung</h3>
+      <p>${m.desc}</p>
+    `;
+			} else if (type === "everyday") {
+				const e = everyday[index];
+				content = `
+      <h2>${e.problem}</h2>
+      <div class="tip">
+        <b style="color:#1b5e20;">Konkreter Tipp & Handlungsempfehlung:</b>
+        <p style="margin-top:8px;">${e.solution}</p>
+      </div>
+      <p style="margin-top:15px;"><a href="${e.link}" target="_blank" style="color:var(--accent); font-weight:bold;">Quelle / Weitere Details auf familienplanung.de ↗</a></p>
+    `;
+			} else if (type === "dauerhaft") {
+				content = `
+      <h2>Dauerhafte Verhütung (Sterilisation)</h2>
+      <h3>Vasektomie (beim Mann)</h3>
+      <p>Bei der Vasektomie werden die Samenleiter im Hodensack durchtrennt. Der Eingriff ist risikoarm und beeinträchtigt weder die Erektionsfähigkeit noch den Erguß (außer dass keine Spermien mehr enthalten sind).</p>
+      <h3>Sterilisation (bei der Frau)</h3>
+      <p>Hierbei werden die Eileiter operativ verschlossen oder entfernt, sodass Eizellen nicht mehr befruchtet werden können.</p>
+      <div class="warning"><b>Achtung:</b> Beide Verfahren sind prinzipiell endgültig und nur schwer rückgängig zu machen. Sie eignen sich nur für eine abgeschlossene Lebensplanung.</div>
+      <p style="margin-top:15px;"><a href="https://www.profamilia.de/themen/verhuetung/sterilisation" target="_blank" style="color:var(--accent); font-weight:bold;">Informationen bei pro familia ↗</a></p>
+    `;
+			}
+
+			document.getElementById("modalContent").innerHTML = content;
+			document.getElementById("modal").classList.add("open");
+		}
+
+		function closeModal() {
+			document.getElementById("modal").classList.remove("open");
+		}
+		document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+		// Render Quiz
+		const qform = document.getElementById("quizForm");
+		quiz.forEach((q, i) => {
+			const box = document.createElement("div");
+			box.className = "quizq";
+			box.innerHTML = `<p>${q.q}</p>` + q.options.map(opt => `
+    <label>
+      <input type="radio" name="q${i}" value="${opt.replace(/"/g, '&quot;')}">
+      ${opt}
+    </label>
+  `).join("");
+			qform.appendChild(box);
+		});
+
+		// Evaluate Quiz
+		function checkQuiz() {
+			let score = 0;
+			let answered = 0;
+
+			quiz.forEach((q, i) => {
+				const chosen = document.querySelector(`input[name="q${i}"]:checked`);
+				if (chosen) {
+					answered++;
+					if (chosen.value === q.a) score++;
+				}
+			});
+
+			const resDiv = document.getElementById("quizResult");
+			resDiv.style.display = "block";
+
+			if (answered < quiz.length) {
+				resDiv.style.borderColor = "#f57c00";
+				resDiv.innerHTML = `Du hast <b>${answered} von ${quiz.length} Fragen</b> beantwortet. Bitte beantworte alle Fragen, um dein Gesamtergebnis zu sehen!`;
+			} else {
+				let feedback = "";
+				if (score >= 11) {
+					feedback = "<b>Hervorragend! 🎉</b> Du bist absolut fit beim Thema Verhütung und kennst auch schwierige Details!";
+				} else if (score >= 8) {
+					feedback = "<b>Gute Leistung! 👍</b> Du hast ein solides Grundlagenwissen. Schau dir bei den verpassten Fragen die Methoden und Alltagstipps nochmal an.";
+				} else {
+					feedback = "<b>Guter Versuch! 💡</b> Nutze unsere Kampagnen-Seite, um dich noch etwas genauer über die verschiedenen Methoden und Pannen-Tipps zu informieren.";
+				}
+
+				resDiv.style.borderColor = "var(--accent)";
+				resDiv.innerHTML = `<h3>Dein Ergebnis: ${score} von ${quiz.length} Punkten</h3><p>${feedback}</p>`;
+			}
+
+			resDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+		}
+	</script>
+
+</body>
+
+</html>
